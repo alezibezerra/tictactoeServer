@@ -21,17 +21,20 @@ io.on('connection', (socket) =>{
     {
         if(!objJogo['id']){objJogo['id'] = shortid.generate()}
 
-        if(objJogo['winner']){
+        if(objJogo['winner']||objJogo['game'].length==9){
             objJogo['game']=['','','','','','','','',''];
         }
-        if(!objJogo['nextPlayer']){objJogo['nextPlayer'] = 'X';}        
+        if(!objJogo['nextPlayer']){objJogo['nextPlayer'] = 'X';} 
         socket.join(objJogo['id']);
-        let numbRoom=(io.sockets.adapter.rooms.get(objJogo['id']).size);
+            let numbRoom=(io.sockets.adapter.rooms.get(objJogo['id']).size);
         if(numbRoom==1){objJogo['xtaken']='no'}else{objJogo['xtaken']='yes'}
 
         objJogo['winner'] = '';
+        if(io.sockets.adapter.rooms.get(objJogo['id']).size>2){
+            socket.leave(objJogo['id']);
+        }
+        io.to(objJogo['id']).emit('configGame', (objJogo));    
         
-        io.to(objJogo['id']).emit('configGame', (objJogo));
         
     });
 
@@ -81,6 +84,8 @@ io.on('connection', (socket) =>{
                 }
             });
         }
+        if(objJogo['game'].filter(String).length==9){
+        objJogo['winner']="No One";;}
             //emmitting the game object back to the other peer
         socket.to(objJogo['id']).emit('novajogada', (objJogo));
     }
