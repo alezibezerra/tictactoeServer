@@ -13,7 +13,7 @@ const cors = require('cors');
 app.use(cors({ origin: true }));
 
 
-server.listen('4001', '192.168.0.15' , () =>{});
+server.listen(process.env.PORT||'4001', () =>{});
 
 let xtaken=false;
 io.on('connection', (socket) =>{
