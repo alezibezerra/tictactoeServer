@@ -17,11 +17,13 @@ server.listen(process.env.PORT||'4001', () =>{});
 
 let xtaken=false;
 io.on('connection', (socket) =>{
-    socket.on('criarJogo', (objJogo) =>
+    
+    socket.on('createGame', (objJogo) =>
     {
+        
         if(!objJogo['id']){objJogo['id'] = shortid.generate()}
 
-        if(objJogo['winner']||objJogo['game'].length==9){
+        if(objJogo['winner']||objJogo['board'].length==9){
             objJogo['game']=['','','','','','','','',''];
         }
         if(!objJogo['nextPlayer']){objJogo['nextPlayer'] = 'X';} 
@@ -39,7 +41,7 @@ io.on('connection', (socket) =>{
     });
 
 
-    socket.on('oneplay', (objJogo) =>{
+    socket.on('newMove', (objJogo) =>{
         
         if(objJogo['winner']!==''){
             return;
@@ -69,25 +71,25 @@ io.on('connection', (socket) =>{
         for(let combo in combos){
             combos[combo].forEach((winningPattern) => {
                 if (
-                    objJogo['game'][winningPattern[0]] === '' ||
-                    objJogo['game'][winningPattern[1]] === '' ||
-                    objJogo['game'][winningPattern[2]] ===''
+                    objJogo['board'][winningPattern[0]] === '' ||
+                    objJogo['board'][winningPattern[1]] === '' ||
+                    objJogo['board'][winningPattern[2]] ===''
                 ){
                     // faz nada
                 }else if(
-                    objJogo['game'][winningPattern[0]] === objJogo['game'][winningPattern[1]] &&
-                    objJogo['game'][winningPattern[1]] === objJogo['game'][winningPattern[2]]
+                    objJogo['board'][winningPattern[0]] === objJogo['board'][winningPattern[1]] &&
+                    objJogo['board'][winningPattern[1]] === objJogo['board'][winningPattern[2]]
                 ){
                                         
-                    objJogo['winner']=objJogo['game'][winningPattern[0]];
+                    objJogo['winner']=objJogo['board'][winningPattern[0]];
      
                 }
             });
         }
-        if(objJogo['game'].filter(String).length==9){
+        if(objJogo['board'].filter(String).length==9){
         objJogo['winner']="No One";;}
             //emmitting the game object back to the other peer
-        socket.to(objJogo['id']).emit('novajogada', (objJogo));
+        socket.to(objJogo['id']).emit('newPlayFromServer', (objJogo));
     }
     })
 });
