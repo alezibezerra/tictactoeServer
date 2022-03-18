@@ -48,8 +48,10 @@ io.on('connection', (socket) =>{
         }
         else
         {
-        if(objJogo['nextPlayer']=='X'){objJogo['nextPlayer']='O'}else
-        if(objJogo['nextPlayer']=='O'){objJogo['nextPlayer']='X'} 
+            if(objJogo['board'].filter(String).length==9){
+            objJogo['winner']="No One";;}
+            if(objJogo['nextPlayer']=='X'){objJogo['nextPlayer']='O'}else
+            if(objJogo['nextPlayer']=='O'){objJogo['nextPlayer']='X'} 
             //calculating winner, I tried a milion times put his into a function but it kept returning undefines
         let combos = {
             across: [
@@ -86,8 +88,7 @@ io.on('connection', (socket) =>{
                 }
             });
         }
-        if(objJogo['board'].filter(String).length==9){
-        objJogo['winner']="No One";;}
+        
             //emmitting the game object back to the other peer
         socket.to(objJogo['id']).emit('newPlayFromServer', (objJogo));
     }
