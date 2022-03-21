@@ -90,7 +90,7 @@ io.on('connection', (socket) =>{
         }
         
             //emmitting the game object back to the other peer
-        socket.to(objJogo['id']).emit('newPlayFromServer', (objJogo));
+        socket.in(objJogo['id']).emit('newPlayFromServer', (objJogo));
     }
     })
 });
