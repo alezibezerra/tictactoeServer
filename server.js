@@ -13,7 +13,7 @@ const cors = require('cors');
 app.use(cors({ origin: true }));
 
 
-server.listen(process.env.PORT||'4001', () =>{});
+server.listen(process.env.PORT||'4003', () =>{});
 
 let xtaken=false;
 io.on('connection', (socket) =>{
@@ -90,7 +90,7 @@ io.on('connection', (socket) =>{
         }
         
             //emmitting the game object back to the other peer
-        socket.in(objJogo['id']).emit('newPlayFromServer', (objJogo));
+        io.to(objJogo['id']).emit('newPlayFromServer', (objJogo));
     }
     })
 });
